@@ -7,7 +7,7 @@ Per-project tweaks live in a tiny config file—no copy-paste drift.
 
 ```bash
 # Clone anywhere and add bin/ to your PATH
-git clone https://github.com/<you>/syncrun.git
+git clone https://github.com/sohamsaha99/syncrun.git
 echo 'export PATH="$HOME/syncrun/bin:$PATH"' >> ~/.bashrc   # or ~/.zshrc
 source ~/.bashrc
 ```

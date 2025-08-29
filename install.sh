@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/yourname/syncrun.git}"
+REPO_URL="${REPO_URL:-https://github.com/sohamsaha99/syncrun.git}"
 PREFIX="${PREFIX:-$HOME/.local}"           # install root
 BIN_DIR="${BIN_DIR:-$PREFIX/bin}"
 ETC_DIR="${ETC_DIR:-$PREFIX/etc/syncrun}"
