@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# sync-run: central script to rsync a project to a remote and run it there.
-# Put this file in ~/bin/sync-run and ensure ~/bin is on your PATH.
+# syncrun: central script to rsync a project to a remote and run it there.
+# Put this file in ~/bin/syncrun and ensure ~/bin is on your PATH.
 
 set -euo pipefail
 
@@ -30,7 +30,7 @@ run_hook() {
   local name="$1"
   local hook="./.syncrun/hooks/${name}"
   if [[ -x "$hook" ]]; then
-    echo "[sync-run] Running hook: $name"
+    echo "[syncrun] Running hook: $name"
     "$hook"
   fi
 }
@@ -46,18 +46,18 @@ join_excludes() {
 print_help_and_exit() {
   cat <<'EOF'
 Usage:
-sync-run [--no-sync] [--no-run] [--pull-env] [--onsite] [--help] [--] ARGS...
+syncrun [--no-sync] [--no-run] [--pull-env] [--onsite] [--help] [--] ARGS...
 
 Examples:
-sync-run 'lr=0.05 epochs=200'   # sync + run (default)
-sync-run --no-sync 'lr=0.05'    # only run remotely
-sync-run --no-run               # only sync
-sync-run --pull-env             # pull remote_env.RData back
-sync-run --onsite               # use REMOTE_ON_SITE instead of REMOTE
+syncrun lr=0.05 epochs=200   # sync + run (default)
+syncrun --no-sync lr=0.05    # only run remotely
+syncrun --no-run               # only sync
+syncrun --pull-env             # pull remote_env.RData back
+syncrun --onsite               # use REMOTE_ON_SITE instead of REMOTE
 
 Config precedence:
 built-in defaults <
-~/.config/sync-run/config.sh <
+~/.config/syncrun/config.sh <
 ./.syncrun/config.sh <
 CLI flags
 
@@ -81,21 +81,21 @@ while [[ $# -gt 0 ]]; do
     --) shift; RUN_ARGS="$*"; break ;;
     *)
       # first non-flag: treat remainder as RUN_ARGS
-      RUN_ARGS="$*"
+      RUN_ARGS_ARR=("$@")
       break
       ;;
   esac
 done
 
 # ---------- Load configs (in order) ----------
-if [[ -f "$HOME/.config/sync-run/config.sh" ]]; then
+if [[ -f "$HOME/.config/syncrun/config.sh" ]]; then
   # shellcheck disable=SC1090
-  source "$HOME/.config/sync-run/config.sh"
+  source "$HOME/.config/syncrun/config.sh"
 fi
 
-if [[ -f "$_here/.sync-run/config.sh" ]]; then
+if [[ -f "$_here/.syncrun/config.sh" ]]; then
   # shellcheck disable=SC1091
-  source "$_here/.sync-run/config.sh"
+  source "$_here/.syncrun/config.sh"
 fi
 
 # Decide remote after config overrides
@@ -106,7 +106,7 @@ fi
 # ---------- Do the work ----------
 if [[ $DO_SYNC -eq 1 ]]; then
   run_hook pre_sync
-  echo "[sync-run] Syncing to $REMOTE:$REMOTE_RUN_DIR ..."
+  echo "[syncrun] Syncing to $REMOTE:$REMOTE_RUN_DIR ..."
   mapfile -t _ex < <(join_excludes)
   rsync -avzP --delete \
     -e "ssh" \
@@ -117,9 +117,17 @@ fi
 
 if [[ $DO_RUN -eq 1 ]]; then
   run_hook pre_run
-  echo "[sync-run] Running on $REMOTE in $REMOTE_RUN_DIR ..."
+  echo "[syncrun] Running on $REMOTE in $REMOTE_RUN_DIR ..."
   # Safely substitute RUN_ARGS into RUN_CMD
-  safe_run_cmd="${RUN_CMD/__RUN_ARGS__/$(printf '%q' "$RUN_ARGS")}"
+  args_joined=""
+  if [ "${RUN_ARGS_ARR+isset}" ] && ((${#RUN_ARGS_ARR[@]} > 0)); then
+    args_joined="$(printf ' %q' "${RUN_ARGS_ARR[@]}")"
+    args_joined="${args_joined# }"
+  fi
+
+  safe_run_cmd="${RUN_CMD/__RUN_ARGS__/$args_joined}"
+
+  echo "$safe_run_cmd"
   ssh -t "$REMOTE" bash -lc "
   set -euo pipefail
   cd \"$REMOTE_RUN_DIR\"
@@ -131,9 +139,9 @@ if [[ $DO_RUN -eq 1 ]]; then
 fi
 
 if [[ $PULL_ENV -eq 1 ]]; then
-  echo "[sync-run] Pulling remote_env.RData ..."
+  echo "[syncrun] Pulling remote_env.RData ..."
   rsync -avzP -e "ssh" "$REMOTE:$REMOTE_RUN_DIR/remote_env.RData" ./ || {
-    echo '[sync-run] remote_env.RData not found (skipping).'
+    echo '[syncrun] remote_env.RData not found (skipping). Check file location or SSH connection.'
   }
 fi
 

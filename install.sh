@@ -4,7 +4,6 @@ set -euo pipefail
 REPO_URL="${REPO_URL:-https://github.com/sohamsaha99/syncrun.git}"
 PREFIX="${PREFIX:-$HOME/.local}"           # install root
 BIN_DIR="${BIN_DIR:-$PREFIX/bin}"
-ETC_DIR="${ETC_DIR:-$PREFIX/etc/syncrun}"
 TMP_DIR="$(mktemp -d)"
 
 echo "[syncrun] Installing to $PREFIX ..."
@@ -12,13 +11,13 @@ command -v git >/dev/null 2>&1 || { echo "git required"; exit 1; }
 
 git clone --depth=1 "$REPO_URL" "$TMP_DIR"
 
-mkdir -p "$BIN_DIR" "$ETC_DIR"
-install -m 0755 "$TMP_DIR/bin/sync-run" "$BIN_DIR/sync-run"
+mkdir -p "$BIN_DIR"
+install -m 0755 "$TMP_DIR/bin/syncrun" "$BIN_DIR/syncrun"
 # Optional defaults:
-if [[ -f "$TMP_DIR/etc/default-config.sh" && ! -f "$HOME/.config/sync-run/config.sh" ]]; then
-  mkdir -p "$HOME/.config/sync-run"
-  cp "$TMP_DIR/etc/default-config.sh" "$HOME/.config/sync-run/config.sh"
-  echo "[syncrun] Wrote ~/.config/sync-run/config.sh"
+if [[ ! -f "$HOME/.config/syncrun/config.sh" ]]; then
+  mkdir -p "$HOME/.config/syncrun"
+  cp "$TMP_DIR/etc/default-config.sh" "$HOME/.config/syncrun/config.sh"
+  echo "[syncrun] Wrote default config at ~/.config/syncrun/config.sh"
 fi
 
 # Add to PATH if needed
@@ -32,9 +31,6 @@ case ":$PATH:" in
       ;;
 esac
 
-# Save version for doctor
-cp "$TMP_DIR/VERSION" "$ETC_DIR/VERSION" 2>/dev/null || true
-
 rm -rf "$TMP_DIR"
-echo "[syncrun] Done. Try: sync-run --help"
+echo "[syncrun] Done. Try: syncrun --help"
 
