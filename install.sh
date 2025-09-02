@@ -24,11 +24,11 @@ fi
 case ":$PATH:" in
   *":$BIN_DIR:"*) : ;;
   *)  # shell rc detection
-      SHELL_RC="${HOME}/.bashrc"
-      [[ -n "${ZSH_VERSION:-}" ]] && SHELL_RC="${HOME}/.zshrc"
-      echo "export PATH=\"$BIN_DIR:\$PATH\"" >> "$SHELL_RC"
-      echo "[syncrun] Added $BIN_DIR to PATH (restart shell)"
-      ;;
+    SHELL_RC="${HOME}/.bashrc"
+    [[ -n "${ZSH_VERSION:-}" ]] && SHELL_RC="${HOME}/.zshrc"
+    echo "export PATH=\"$BIN_DIR:\$PATH\"" >> "$SHELL_RC"
+    echo "[syncrun] Added $BIN_DIR to PATH (restart shell)"
+    ;;
 esac
 
 rm -rf "$TMP_DIR"

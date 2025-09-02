@@ -6,10 +6,9 @@ Per-project tweaks live in a tiny config file.
 ## Quick start
 
 ```bash
-# Clone anywhere and add bin/ to your PATH
-git clone https://github.com/sohamsaha99/syncrun.git
-echo 'export PATH="$HOME/syncrun/bin:$PATH"' >> ~/.bashrc   # or ~/.zshrc
-source ~/.bashrc
+# Install to ~/.local/bin and update PATH
+curl -fsSL https://raw.githubusercontent.com/sohamsaha99/syncrun/HEAD/install.sh | bash
+# Restart your shell or: source ~/.bashrc   # or ~/.zshrc
 ```
 
 In each project:
