@@ -16,7 +16,7 @@ install -m 0755 "$TMP_DIR/bin/syncrun" "$BIN_DIR/syncrun"
 # Optional defaults:
 if [[ ! -f "$HOME/.config/syncrun/config.sh" ]]; then
   mkdir -p "$HOME/.config/syncrun"
-  cp "$TMP_DIR/etc/default-config.sh" "$HOME/.config/syncrun/config.sh"
+  cp "$TMP_DIR/examples/default-config.sh" "$HOME/.config/syncrun/config.sh"
   echo "[syncrun] Wrote default config at ~/.config/syncrun/config.sh"
 fi
 

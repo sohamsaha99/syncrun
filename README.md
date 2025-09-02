@@ -1,7 +1,7 @@
 # syncrun
 
 One shared script to **sync a project to a remote** and **run it there**.
-Per-project tweaks live in a tiny config file—no copy-paste drift.
+Per-project tweaks live in a tiny config file.
 
 ## Quick start
 
@@ -23,12 +23,12 @@ cp ~/syncrun/examples/project-config.sh ./.syncrun/config.sh
 Run it:
 
 ```bash
-sync-run 'lr=0.05 epochs=200'   # sync + run
-sync-run --no-sync 'lr=0.05'    # only run
-sync-run --no-run               # only sync
-sync-run --pull-env             # pull remote_env.RData
-sync-run --onsite               # use REMOTE_ON_SITE
-sync-run --help                 # usage
+syncrun lr=0.05 epochs=200   # sync + run
+syncrun --no-sync lr=0.05    # only run
+syncrun --no-run             # only sync
+syncrun --pull-env           # pull remote_env.RData
+syncrun --onsite             # use REMOTE_ON_SITE
+syncrun --help               # usage
 ```
 
 ## Hooks (optional)
@@ -36,10 +36,10 @@ sync-run --help                 # usage
 Create executable files for custom steps:
 
 ```
-.synchrun/hooks/pre_sync
-.synchrun/hooks/post_sync
-.synchrun/hooks/pre_run
-.synchrun/hooks/post_run
+.syncrun/hooks/pre_sync
+.syncrun/hooks/post_sync
+.syncrun/hooks/pre_run
+.syncrun/hooks/post_run
 ```
 
 Example:
