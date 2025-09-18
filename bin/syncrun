@@ -16,6 +16,7 @@ REMOTE="lynx"
 REMOTE_ON_SITE="saha@lynx.dfci.harvard.edu"
 REMOTE_RUN_DIR="tmp/proj"
 REMOTE_DATA="remote_env.RData"
+LOCAL_DATA_DIR="./"
 
 # rsync excludes (space-separated glob patterns)
 RSYNC_EXCLUDES=(".git" "renv" ".Rproj.user" ".RData")
@@ -141,7 +142,7 @@ fi
 
 if [[ $PULL_ENV -eq 1 ]]; then
   echo "[syncrun] Pulling remote data ..."
-  rsync -avzP -e "ssh" "$REMOTE:$REMOTE_RUN_DIR/$REMOTE_DATA" ./ || {
+  rsync -avzP -e "ssh" "$REMOTE:$REMOTE_RUN_DIR/$REMOTE_DATA" "$LOCAL_DATA_DIR" || {
     echo '[syncrun] remote data not found (skipping). Check file location or SSH connection.'
   }
 fi
